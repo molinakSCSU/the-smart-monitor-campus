@@ -197,16 +197,18 @@ smart-campus-monitor/
 
 ## Team Responsibilities
 
-### Team Member A
+### Kenny Molina
+- SQLite database design and schema creation
+- Database population and testing
+- JOIN query development and analytics/reporting
+- Streamlit dashboard development
+- Dashboard dependencies and deployment setup
+- Project documentation and configuration examples
+
+### Michael Johnson
 - Raspberry Pi setup and camera configuration
 - Image capture script development
 - Cloud Storage upload integration
-- End-to-end pipeline testing
-
-### Team Member B
-- FastAPI backend development
 - Vision API integration and response parsing
-- SQLite database design and schema creation
-- JOIN query development and testing
-- Streamlit dashboard development
-- Filter and visualization implementation
+- End-to-end pipeline testing
+- FastAPI backend integration support
