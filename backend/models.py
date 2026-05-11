@@ -27,6 +27,11 @@ class DeviceResponse(BaseModel):
 
 # Image schemas
 
+class ImageUpdate(BaseModel):
+    device_id: Optional[int] = None
+    file_name: Optional[str] = Field(None, min_length=1, max_length=255)
+
+
 class ImageResponse(BaseModel):
     image_id: int
     device_id: int

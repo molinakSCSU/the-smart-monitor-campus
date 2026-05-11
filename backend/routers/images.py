@@ -7,7 +7,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, Response
 
 from database import get_connection
-from models import ImageResponse
+from models import ImageResponse, ImageUpdate
 from services.storage import (
     delete_image as gcs_delete,
     extract_object_name,
@@ -126,6 +126,57 @@ def get_image(image_id: int):
         if not row:
             raise HTTPException(status_code=404, detail="Image not found")
         return _row_to_image(row)
+    finally:
+        conn.close()
+
+
+@router.put("/{image_id}", response_model=ImageResponse)
+def update_image(image_id: int, body: ImageUpdate):
+    """Update stored image metadata."""
+    conn = get_connection()
+    try:
+        row = conn.execute(
+            "SELECT * FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        updates = []
+        params = []
+
+        if body.device_id is not None:
+            device = conn.execute(
+                "SELECT device_id FROM devices WHERE device_id = ?",
+                (body.device_id,),
+            ).fetchone()
+            if not device:
+                raise HTTPException(status_code=404, detail="Device not found")
+            updates.append("device_id = ?")
+            params.append(body.device_id)
+        if body.file_name is not None:
+            updates.append("file_name = ?")
+            params.append(body.file_name)
+
+        if not updates:
+            return _row_to_image(row)
+
+        params.append(image_id)
+        conn.execute(
+            f"UPDATE images SET {', '.join(updates)} WHERE image_id = ?",
+            params,
+        )
+
+        if body.device_id is not None and body.device_id != row["device_id"]:
+            conn.execute(
+                "UPDATE detections SET device_id = ? WHERE image_id = ?",
+                (body.device_id, image_id),
+            )
+
+        conn.commit()
+        updated_row = conn.execute(
+            "SELECT * FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        return _row_to_image(updated_row)
     finally:
         conn.close()
 

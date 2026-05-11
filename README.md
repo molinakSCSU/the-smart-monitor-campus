@@ -152,6 +152,7 @@ Cloud services are optional for local development. If you skip this section, upl
 | POST | /images/upload | Upload image + auto-detect |
 | GET | /images | List images |
 | GET | /images/{id} | Get image metadata |
+| PUT | /images/{id} | Update image metadata |
 | DELETE | /images/{id} | Delete image + GCS file |
 
 ### Reports
