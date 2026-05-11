@@ -19,7 +19,7 @@ Use Python 3.11 for local setup. That matches the Docker images in this repo and
 ### 1. Clone and set up
 
 ```bash
-cd smart-campus-monitor
+cd the-smart-monitor-campus
 
 # Backend
 cd backend
@@ -166,7 +166,7 @@ Cloud services are optional for local development. If you skip this section, upl
 ## Project Structure
 
 ```text
-smart-campus-monitor/
+the-smart-monitor-campus/
 |-- backend/
 |   |-- main.py
 |   |-- config.py
