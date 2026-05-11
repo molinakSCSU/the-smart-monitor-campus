@@ -76,6 +76,14 @@ def format_object_summary(detection: dict | None) -> str:
     return f"{detection['object_label']} ({detection['confidence']:.0%})"
 
 
+def can_preview_image(image: dict | None) -> bool:
+    """Return True when the latest image points at retrievable content."""
+    if not image:
+        return False
+    image_url = image.get("image_url", "")
+    return "mock-bucket" not in image_url
+
+
 def api_get(path: str, params: dict = None) -> dict | list | None:
     """GET request to the FastAPI backend."""
     try:
@@ -184,11 +192,16 @@ if page == "Dashboard":
 
     with preview_col:
         st.subheader("Latest Image")
-        if latest_image:
+        if latest_image and can_preview_image(latest_image):
             st.image(
                 f"{API_BASE}/images/{latest_image['image_id']}/content",
                 caption=f"Image {latest_image['image_id']} · {format_timestamp(latest_image['captured_at'])}",
                 use_column_width=True,
+            )
+        elif latest_image:
+            st.info(
+                "Sample seed data does not include real image files. Upload a fresh image or run the Pi capture loop "
+                "to see a live preview here."
             )
         else:
             st.info(
